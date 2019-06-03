@@ -1,2 +1,2 @@
 # TeamGfunkApp
-![UML](TeamGfunkApp/images/Banking_App.png)
+![UML](/images/Banking_App.png)
