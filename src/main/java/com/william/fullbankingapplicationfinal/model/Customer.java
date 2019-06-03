@@ -1,9 +1,7 @@
 package com.william.fullbankingapplicationfinal.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Customer {
@@ -19,25 +17,22 @@ public class Customer {
     @Column(name = "CUSTOMER_LAST_NAME")
     private String last_name;
 
-    private String username;
 
-    private String password;
 
-//    @JoinColumn(name = "CUSTOMER_ADDRESSES")
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    private Address address;
+    @JoinColumn(name = "CUSTOMER_ADDRESSES")
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Address> address;
 
 
     public Customer() {
 
     }
 
-    public Customer(Long customer_id, String first_name, String last_name, String username, String password) {
+    public Customer(Long customer_id, String first_name, String last_name, Set<Address> address) {
         this.customer_id = customer_id;
         this.first_name = first_name;
         this.last_name = last_name;
-        this.username = username;
-        this.password = password;
+        this.address = address;
 
     }
 
@@ -65,29 +60,13 @@ public class Customer {
         this.last_name = last_name;
     }
 
-    public String getUsername() {
-        return username;
+    public Set<Address> getAddress() {
+        return address;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAddress(Set<Address> address) {
+        this.address = address;
     }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-//
-//    public Address getAddress() {
-//        return address;
-//    }
-//
-//    public void setAddress(Address address) {
-//        this.address = address;
-//    }
 
     @Override
     public String toString() {
@@ -95,8 +74,7 @@ public class Customer {
                 "customer_id=" + customer_id +
                 ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password +
+                ", address=" + address +
                 '}';
     }
 }
