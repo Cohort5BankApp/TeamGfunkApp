@@ -1,15 +1,16 @@
 package com.william.fullbankingapplicationfinal.controller;
 
+
+import com.william.fullbankingapplicationfinal.error.HttpException;
 import com.william.fullbankingapplicationfinal.model.Account;
 import com.william.fullbankingapplicationfinal.model.Customer;
 import com.william.fullbankingapplicationfinal.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -21,76 +22,106 @@ public class AccountController {
     private CustomerService customerService;
 
     @GetMapping(value = "/accounts")
-    public ResponseEntity<?> getAllAccounts(){
-        Iterable<Account> accounts = accountService.getAllAcounts();
-        if(accounts == null) {
-            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "error fetching accounts");
-        }
-        return new ResponseEntity<>(accounts, HttpStatus.OK);
+    public Iterable<Account> getAllAccounts(){
+        ArrayList<Account> accounts = accountService.getAllAccounts();
+        if(accounts.size() < 1)
+            throw new HttpException(HttpStatus.NOT_FOUND, "error fetching accounts");
+        if(accounts.size() > 0)
+            throw new HttpException(HttpStatus.OK, "success");
+        return accounts;
+
     }
 
-    @GetMapping(value = ("/{customerId}/accounts"))
-    public ResponseEntity<?> getAccountsByCustomer(@PathVariable Long customer_id){
-        Iterable<Account> accounts = customerService.getAccountsByCustomer(customer_id);
-
-        return new ResponseEntity<>(accounts, HttpStatus.OK);
-    }
 
     @GetMapping(value = "/{customerId}/accounts/{accountId}/customer")
-    public ResponseEntity<?> getAccountOwner(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
+    public Customer getAccountOwner(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
+        Optional<Account> account = accountService.getAccountById(account_id);
         Customer customer = accountService.getAccountOwner(account_id);
-        return new ResponseEntity<>(customer, HttpStatus.OK);
-    }
+        if(customer == null)
+            throw new HttpException(HttpStatus.NOT_FOUND, "error fetching customer");
+        if(customer != null)
+            throw new HttpException(HttpStatus.OK, "success");
 
+        return customer;
+
+    }
 
     @PostMapping(value = "/{customerId}/accounts/createAccount")
-    public ResponseEntity<?> createAccount(@PathVariable Long customer_id, @RequestBody Account account){
+    public Optional<Account> createAccount (@PathVariable("customerId") Long customer_id, @RequestBody Account account) {
         accountService.createAccount(customer_id, account);
-        return new ResponseEntity<>(null, HttpStatus.CREATED);
+        Optional<Account> target_account = accountService.getAccountById(account.getId());
+        if(!target_account.isPresent())
+            throw new HttpException(HttpStatus.NOT_FOUND, "error creating account");
+        if(target_account.isPresent())
+            throw new HttpException(HttpStatus.CREATED, "success");
+        return target_account;
     }
-    @GetMapping(value = "/{customerId}/accounts/{accountId}")
-    public ResponseEntity<?> getAccountById(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
-        Optional<Account> account = accountService.getAccountById(account_id);
-        if(account == null){
-            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "error fetching account");
 
-        }
-        return new ResponseEntity<>(account, HttpStatus.OK);
+
+    @GetMapping(value = "/accounts/{accountId}")
+    public Optional<Account> getAccountById(@PathVariable("accountId") Long account_id){
+        Optional<Account> account = accountService.getAccountById(account_id);
+        if(!account.isPresent())
+            throw new HttpException(HttpStatus.NOT_FOUND, "error fetching account");
+        if(account.isPresent())
+            throw new HttpException(HttpStatus.OK, "success");
+
+        return account;
     }
 
     @PutMapping(value = "/{customerId}/accounts/{accountId}")
-    public ResponseEntity<?> updateAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id, @RequestBody Account account){
+    public Optional<Account> updateAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id, @RequestBody Account account){
         accountService.updateAccount(account);
-        if(account == null) {
-            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "Error");
-        }
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        Optional<Account> accountOptional = accountService.getAccountById(account_id);
+        if(!accountOptional.isPresent())
+            throw new HttpException(HttpStatus.NOT_FOUND, "error updating account");
+        if(accountOptional.isPresent())
+            throw new HttpException(HttpStatus.OK, "success");
+
+        return accountOptional;
     }
 
     @DeleteMapping(value = "/{customerId}/accounts/{accountId}")
-    public ResponseEntity<?> deleteAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
+    public void deleteAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
         accountService.deleteAccount(account_id);
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        Optional<Account> accountOptional = accountService.getAccountById(account_id);
+        if(!accountOptional.isPresent())
+            throw new HttpException(HttpStatus.OK, "successfully deleted account");
+        if(accountOptional.isPresent())
+            throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "error deleting account");
     }
     @GetMapping(value = "/{customerId}/accounts/{accountId}/deposits")
-    public ResponseEntity<?> getDepositsByAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
-        Iterable<Deposit> deposits = accountService.getDepositsByAccount(account_id);
-        return new ResponseEntity<>(deposits, HttpStatus.OK);
+    public Iterable<Deposit> getDepositsByAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
+        ArrayList<Deposit> deposits = accountService.getDepositsByAccount(account_id);
+        if(deposits.size() < 1)
+            throw new HttpException(HttpStatus.NOT_FOUND, "error fetching deposits");
+        if(deposits.size() > 0)
+            throw new HttpException(HttpStatus.OK, "success");
+
+        return deposits;
+
     }
 
     @GetMapping(value= "/{customerId}/accounts/{accountId}/withdrawls")
-    public ResponseEntity<?> getWithdrawlsByAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
-        Iterable<Withdrawl> withdrawls =  accountService.getWithdrawlsByAccount(account_id);
-        return new ResponseEntity<>(withdrawls, HttpStatus.OK);
+    public Iterable<Withdrawl> getWithdrawlsByAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
+        Account account = accountService.getAccountById(account_id).get();
+        ArrayList<Withdrawl> withdrawls =  accountService.getWithdrawlsByAccount(account_id);
+        if(withdrawls.size() < 1)
+            throw new HttpException(HttpStatus.NOT_FOUND, "error fetching withdrawls");
+        if(withdrawls.size() > 0)
+            throw new HttpException(HttpStatus.OK, "success");
+
+        return withdrawls;
     }
     @GetMapping(value = "/{customerId}/accounts/{accountId}/bills")
-    public ResponseEntity<?> getBillsByAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
-        Iterable<Bill> bills = accountService.getBillsByAccount(account_id);
-        if(bills == null) {
-            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "error fetching bills");
-        }
-        return new ResponseEntity(bills, HttpStatus.OK);
-    }
+    public Iterable<Bill> getBillsByAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
+        ArrayList<Bill> bills = accountService.getBillsByAccount(account_id);
+        if(bills.size() < 1)
+            throw new HttpException(HttpStatus.NOT_FOUND "error fetching bills");
+        if(bills.size() > 0)
+            throw new HttpException(HttpStatus.OK, "success");
 
+        return bills;
+    }
 
 }

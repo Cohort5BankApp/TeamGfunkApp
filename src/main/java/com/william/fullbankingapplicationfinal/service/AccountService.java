@@ -1,9 +1,11 @@
 package com.william.fullbankingapplicationfinal.service;
 
+import com.william.fullbankingapplicationfinal.error.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.william.fullbankingapplicationfinal.model.*;
+
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -13,29 +15,36 @@ public class AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
-    @Autowired
-    private DepositRepository depositRepository;
+
+    //    @Autowired
+//    private DepositRepository depositRepository;
     @Autowired
     private CustomerRepository customerRepository;
-    @Autowired
-    private WithdrawlRepository withdrawlRepository;
-    @Autowired
-    private BillRepository billRepository;
-
-    public Iterable<Account> getAllAcounts(){
-        return accountRepository.findAll();
+//    @Autowired
+//    private WithdrawlRepository withdrawlRepository;
+//    @Autowired
+//    private BillRepository billRepository;
+//
+    public ArrayList<Account> getAllAccounts() {
+        Iterable<Account> accounts = accountRepository.findAll();
+        ArrayList<Account> these_accounts = new ArrayList<>();
+        for (Account account : accounts) {
+            these_accounts.add(account);
+        }
+        return these_accounts;
+    }
+//
+    public Optional<Account> getAccountById(Long id) {
+        Optional<Account> account = accountRepository.findById(id);
+        return account;
     }
 
-    public Optional<Account> getAccountById(Long id){
-        return accountRepository.findById(id);
-    }
+    public void createAccount(Long customer_id, Account account) throws HttpException, HttpClientErrorException {
+            accountRepository.save(account);
+            Customer customer = customerRepository.findById(customer_id).get();
+            account.setCustomer(customer);
 
-    public void createAccount(Long customer_id, Account account){
-        accountRepository.save(account);
-        Customer customer = customerRepository.findById(customer_id).get();
-        account.setCustomer(customer);
-    }
-
+}
     public void updateAccount(Account account){
         accountRepository.save(account);
 
