@@ -9,7 +9,7 @@ import com.william.fullbankingapplicationfinal.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.ArrayList;
 
 @Service
 public class CustomerService {
@@ -27,7 +27,7 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
-    public Iterable<Customer> getCustomerById(Long customer_id) {
+    public Customer getCustomerById(Long customer_id) {
         return customerRepository.findById(customer_id).get();
     }
 
@@ -39,13 +39,28 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
-    public Iterable<Bill> getBillsByCustomer(Long customer_id) {
-        return customerRepository.findAllById(customer_id).get();
+    public ArrayList<Bill> getBillsByCustomer(Long customer_id) {
+        Customer customer = getCustomerById(customer_id);
+        Iterable<Bill> bills = billRepository.findAll();
+        ArrayList<Bill> customer_bills = new ArrayList<>();
+        for(Bill bill : bills){
+            if(bill.getAccount_id() == customer.getCustomer_id()) {
+                customer_bills.add(bill);
+            }
+        }
+        return customer_bills;
     }
 
-    public Iterable<Account> getAccountsByCustomer(Long customer_id) {
+    public ArrayList<Account> getAccountsByCustomer(Long customer_id) {
         Customer customer = getCustomerById(customer_id);
-        return accountRepository.findAll(customer);
+        Iterable<Account> accounts = accountRepository.findAll();
+        ArrayList<Account> customer_accounts = new ArrayList<>();
+        for(Account account : accounts) {
+            if(account.getId() == customer.getCustomer_id()) {
+                customer_accounts.add(account);
+            }
+        }
+        return customer_accounts;
     }
 
     public boolean existsById(Long id) {

@@ -33,7 +33,7 @@ public class CustomerController {
         URI newCustomerUri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(customer.getId())
+                .buildAndExpand(customer.getCustomer_id())
                 .toUri();
         responseHeaders.setLocation(newCustomerUri);
         return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
@@ -57,7 +57,7 @@ public class CustomerController {
 
     @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> findCustomerById(@PathVariable Long id) {
-        Optional<Customer> customer = customerService.getCustomerById(id);
+        Iterable<Customer> customer = customerService.getCustomerById(id);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
