@@ -57,14 +57,13 @@ public class CustomerController {
 
     @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> findCustomerById(@PathVariable Long id) {
-        Iterable<Customer> customer = customerService.getCustomerById(id);
+        Customer customer = customerService.getCustomerById(id);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/customer/{id}/bills", method = RequestMethod.GET)
     public ResponseEntity<Iterable<Bill>> getBillsByCustomer(@PathVariable Long id) {
         Iterable<Bill> allBills = customerService.getBillsByCustomer(id);
-        Iterable<Account>
         return new ResponseEntity<>(allBills, HttpStatus.OK);
     }
 
