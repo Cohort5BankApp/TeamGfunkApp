@@ -30,8 +30,9 @@ public class CustomerController {
     AccountRepository accountRepository;
 
     @RequestMapping(value = "/customer", method = RequestMethod.POST)
-    public ResponseEntity<?> createCustomer(@Valid @RequestBody Customer customer) {
+    public Optional<Customer> createCustomer(@Valid @RequestBody Customer customer) {
         customerService.createCustomer(customer);
+        Optional<Customer> new_customer = customerService.getCustomerById(customer.getCustomer_id());
         HttpHeaders responseHeaders = new HttpHeaders();
         URI newCustomerUri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -39,7 +40,11 @@ public class CustomerController {
                 .buildAndExpand(customer.getCustomer_id())
                 .toUri();
         responseHeaders.setLocation(newCustomerUri);
-        return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
+        if(!new_customer.isPresent())
+            throw new HttpException(HttpStatus.NOT_FOUND, "Error creating customer");
+        if(new_customer.isPresent())
+            throw new HttpException(HttpStatus.CREATED, "Success");
+        return new_customer;
     }
 
     @RequestMapping(value = "/customer/{id}", method = RequestMethod.PUT)
@@ -80,6 +85,7 @@ public class CustomerController {
             throw new HttpException(HttpStatus.NOT_FOUND, "Error fetching bills");
         if(allBills.size() > 0)
             throw new HttpException(HttpStatus.OK, "Success");
+        return allBills;
     }
 
     @RequestMapping(value = "/customer/{id}/accounts", method = RequestMethod.GET)
