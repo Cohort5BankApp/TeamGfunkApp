@@ -31,7 +31,7 @@ public class Deposit {
 	}
 
 	@Column(name = "Account_id")
-	private Long payee_id;
+	private Long account_id;
 
 	@Column(name = "Deposit_medium")
 	private DepositMedium medium;
@@ -61,12 +61,12 @@ public class Deposit {
 		this.transaction_date = transaction_date;
 	}
 
-	public Long getPayee_id() {
-		return payee_id;
+	public Long getAccount_id() {
+		return account_id;
 	}
 
-	public void setPayee_id(Long payee_id) {
-		this.payee_id = payee_id;
+	public void setAccount_id(Long account_id) {
+		this.account_id = account_id;
 	}
 
 	public Double getAmount() {

@@ -29,7 +29,7 @@ public class Withdrawal {
 	}
 
 	@Column(name = "Account_id")
-	private Long payer_id;
+	private Long account_id;
 
 	@Column(name = "Deposit_medium")
 	private WithdrawalMedium medium;
@@ -60,12 +60,12 @@ public class Withdrawal {
 		this.transaction_date = transaction_date;
 	}
 
-	public Long getPayer_id() {
-		return payer_id;
+	public Long getAccount_id() {
+		return account_id;
 	}
 
-	public void setPayer_id(Long payer_id) {
-		this.payer_id = payer_id;
+	public void setAccount_id(Long account_id) {
+		this.account_id = account_id;
 	}
 
 	public Double getAmount() {

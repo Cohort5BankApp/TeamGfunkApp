@@ -1,6 +1,9 @@
 package com.william.fullbankingapplicationfinal.service;
 
 import com.william.fullbankingapplicationfinal.model.Account;
+import com.william.fullbankingapplicationfinal.model.Deposit;
+import com.william.fullbankingapplicationfinal.repository.AccountRepository;
+import com.william.fullbankingapplicationfinal.repository.DepositRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
