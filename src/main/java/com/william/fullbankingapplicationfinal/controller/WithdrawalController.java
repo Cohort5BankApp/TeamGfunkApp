@@ -8,18 +8,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
-public class WithdrawController {
+public class WithdrawalController {
 
 	@Autowired
 	private WithdrawRepository withdrawRepository;
 
-	@RequestMapping(path = "/accounts/{accountId}/withdrawals",method = RequestMethod.GET)
-	public ResponseEntity<Iterable<Withdrawal>> getAllWithdrawals(){
-		Iterable<Withdrawal> AllWithdraw = withdrawRepository.findAll();
-		return new ResponseEntity<>(withdrawRepository.findAll(), HttpStatus.OK);
+	@GetMapping(path = "/accounts/{accountId}/withdrawals")
+	public Optional<Withdrawal> getAllWithdrawals(@PathVariable Long id){
+
+		ArrayList<Optional> withdrawal = withdrawRepository.findAll(id);
+
+
+
 	}
 
 	@RequestMapping(path = "/withdrawals/{withdrawalId}", method = RequestMethod.GET)
