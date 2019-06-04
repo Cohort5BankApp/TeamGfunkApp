@@ -1,6 +1,9 @@
 package com.william.fullbankingapplicationfinal.service;
 
-import com.william.fullbankingapplication.CustomerRepository;
+import com.william.fullbankingapplicationfinal.CustomerRepository;
+import com.william.fullbankingapplicationfinal.model.Bill;
+import com.william.fullbankingapplicationfinal.repository.BillRepository;
+import com.william.fullbankingapplicationfinal.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +24,8 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
-    public Optional<Customer> getCustomerById(Long id) {
-        return customerRepository.findById(id);
+    public Iterable<Customer> getCustomerById(Long customer_id) {
+        return customerRepository.findById(customer_id).get();
     }
 
     public void updateCustomer(Customer customer) {
@@ -33,11 +36,12 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
-    public Iterable<Bill> getBillsByCustomer(Long id) {
-        return billRepository.findAll(id);
+    public Iterable<Bill> getBillsByCustomer(Long customer_id) {
+        return customerRepository.findAllById(customer_id).get();
     }
 
-    public Iterable<Account> getAccountsByCustomer(Long id) {
+    public Iterable<Account> getAccountsByCustomer(Long customer_id) {
+        getCustomerById(customer_id);
         return accountRepository.findAll(id);
     }
 

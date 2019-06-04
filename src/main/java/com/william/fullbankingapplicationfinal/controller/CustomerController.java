@@ -1,7 +1,8 @@
 package com.william.fullbankingapplicationfinal.controller;
 
-import com.william.fullbankingapplication.service.BillService;
-import com.william.fullbankingapplication.service.CustomerService;
+import com.william.fullbankingapplicationfinal.service.BillService;
+import com.william.fullbankingapplicationfinal.service.CustomerService;
+import com.william.fullbankingapplicationfinal.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,16 +17,6 @@ import java.util.Optional;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class CustomerController {
-
-//    CustomerController
-//            @RequestMapping("/api/customers")
-//
-//    createCustomer(): @PostMapping("/")
-//    updateCustomer(): @PutMapping("/")
-//    showAllCustomers(): @GetMapping("/")
-//    findCustomerById(): @GetMapping("/")
-//    getBillsByCustomer(): @GetMapping("/")
-//    getAccountsByCustomer(): @GetMapping("/")
 
     @Autowired
     CustomerService customerService;
@@ -70,6 +61,7 @@ public class CustomerController {
     @RequestMapping(value = "/customer/{id}/bills", method = RequestMethod.GET)
     public ResponseEntity<Iterable<Bill>> getBillsByCustomer(@PathVariable Long id) {
         Iterable<Bill> allBills = customerService.getBillsByCustomer(id);
+        Iterable<Account>
         return new ResponseEntity<>(allBills, HttpStatus.OK);
     }
 

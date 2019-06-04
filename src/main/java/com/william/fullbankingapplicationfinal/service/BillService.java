@@ -1,7 +1,11 @@
 package com.william.fullbankingapplicationfinal.service;
 
+import com.william.fullbankingapplicationfinal.model.Bill;
+import com.william.fullbankingapplicationfinal.repository.BillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class BillService {
