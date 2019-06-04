@@ -52,7 +52,8 @@ public class AccountController {
         Optional<Account> target_account = accountService.getAccountById(account.getId());
         if(!target_account.isPresent())
             throw new HttpException(HttpStatus.NOT_FOUND, "error creating account");
-        if(target_account.isPresent())
+            if (target_account.isPresent())
+
             throw new HttpException(HttpStatus.CREATED, "success");
         return target_account;
     }

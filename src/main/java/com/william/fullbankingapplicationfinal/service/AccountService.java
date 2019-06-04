@@ -16,15 +16,15 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    //    @Autowired
-//    private DepositRepository depositRepository;
+        @Autowired
+    private DepositRepository depositRepository;
     @Autowired
     private CustomerRepository customerRepository;
-//    @Autowired
-//    private WithdrawlRepository withdrawlRepository;
-//    @Autowired
-//    private BillRepository billRepository;
-//
+    @Autowired
+    private WithdrawlRepository withdrawlRepository;
+    @Autowired
+    private BillRepository billRepository;
+
     public ArrayList<Account> getAllAccounts() {
         Iterable<Account> accounts = accountRepository.findAll();
         ArrayList<Account> these_accounts = new ArrayList<>();
@@ -39,7 +39,7 @@ public class AccountService {
         return account;
     }
 
-    public void createAccount(Long customer_id, Account account) throws HttpException, HttpClientErrorException {
+    public void createAccount(Long customer_id, Account account){
             accountRepository.save(account);
             Customer customer = customerRepository.findById(customer_id).get();
             account.setCustomer(customer);
