@@ -1,6 +1,7 @@
 package com.william.fullbankingapplicationfinal.service;
 
 import com.william.fullbankingapplicationfinal.error.HttpException;
+import com.william.fullbankingapplicationfinal.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +61,7 @@ public class AccountService {
         return customer;
     }
 
-    public Iterable<Deposit> getDepositsByAccount(Long account_id){
+    public ArrayList<Deposit> getDepositsByAccount(Long account_id){
         Account account = accountRepository.findById(account_id).get();
         Iterable<Deposit> deposits = depositRepository.findAll();
         ArrayList<Deposit> account_deposits = new ArrayList<>();
@@ -73,11 +74,11 @@ public class AccountService {
 
     }
 
-    public Iterable<Withdrawl> getWithdrawlsByAccount(Long account_id){
+    public ArrayList<Withdrawal> getWithdrawlsByAccount(Long account_id){
         Account account = accountRepository.findById(account_id).get();
-        Iterable<Withdrawl> withdrawls = withdrawlRepository.findAll();
-        ArrayList<Withdrawl> account_withdrawls = new ArrayList<>();
-        for(Withdrawl withdrawl : withdrawls) {
+        Iterable<Withdrawal> withdrawls = withdrawlRepository.findAll();
+        ArrayList<Withdrawal> account_withdrawls = new ArrayList<>();
+        for(Withdrawal withdrawl : withdrawls) {
             if (account.getId() == withdrawl.getAccount_id()) {
                 account_withdrawls.add(withdrawl);
             }
@@ -86,7 +87,7 @@ public class AccountService {
     }
 
 
-    public Iterable<Bill> getBillsByAccount(Long account_id){
+    public ArrayList<Bill> getBillsByAccount(Long account_id){
         Iterable<Bill> bills = billRepository.findAll();
         ArrayList<Bill> account_bills = new ArrayList<>();
         for(Bill bill : bills) {

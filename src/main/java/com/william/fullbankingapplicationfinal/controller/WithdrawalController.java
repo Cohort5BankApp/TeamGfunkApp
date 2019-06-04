@@ -2,7 +2,6 @@ package com.william.fullbankingapplicationfinal.controller;
 
 
 import com.william.fullbankingapplicationfinal.model.Withdrawal;
-import com.william.fullbankingapplicationfinal.repository.WithdrawRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
