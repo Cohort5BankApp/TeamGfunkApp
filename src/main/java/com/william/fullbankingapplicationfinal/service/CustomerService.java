@@ -1,7 +1,9 @@
 package com.william.fullbankingapplicationfinal.service;
 
-import com.william.fullbankingapplicationfinal.CustomerRepository;
+import com.william.fullbankingapplicationfinal.model.Account;
 import com.william.fullbankingapplicationfinal.model.Bill;
+import com.william.fullbankingapplicationfinal.model.Customer;
+import com.william.fullbankingapplicationfinal.repository.AccountRepository;
 import com.william.fullbankingapplicationfinal.repository.BillRepository;
 import com.william.fullbankingapplicationfinal.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ public class CustomerService {
     @Autowired
     CustomerRepository customerRepository;
     BillRepository billRepository;
+    AccountRepository accountRepository;
 
     public void createCustomer(Customer customer) {
         customerRepository.save(customer);
@@ -41,8 +44,8 @@ public class CustomerService {
     }
 
     public Iterable<Account> getAccountsByCustomer(Long customer_id) {
-        getCustomerById(customer_id);
-        return accountRepository.findAll(id);
+        Customer customer = getCustomerById(customer_id);
+        return accountRepository.findAll(customer);
     }
 
     public boolean existsById(Long id) {

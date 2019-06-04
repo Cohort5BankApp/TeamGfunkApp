@@ -18,11 +18,11 @@ public class BillService {
     }
 
     public Iterable<Bill> getAllBills() {
-        return customerRepository.findAll();
+        return billRepository.findAll();
     }
 
-    public void createBill(Long id, Bill bill) {
-        billRepository.save(id, bill);
+    public void createBill(Bill bill) {
+        billRepository.save(bill);
     }
 
     public void updateBill(Bill bill) {

@@ -1,5 +1,8 @@
 package com.william.fullbankingapplicationfinal.controller;
 
+import com.william.fullbankingapplicationfinal.model.Account;
+import com.william.fullbankingapplicationfinal.model.Bill;
+import com.william.fullbankingapplicationfinal.model.Customer;
 import com.william.fullbankingapplicationfinal.service.BillService;
 import com.william.fullbankingapplicationfinal.service.CustomerService;
 import com.william.fullbankingapplicationfinal.repository.AccountRepository;
