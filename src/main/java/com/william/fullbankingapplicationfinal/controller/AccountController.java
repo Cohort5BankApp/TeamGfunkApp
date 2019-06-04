@@ -2,9 +2,9 @@ package com.william.fullbankingapplicationfinal.controller;
 
 
 import com.william.fullbankingapplicationfinal.error.HttpException;
-import com.william.fullbankingapplicationfinal.model.Account;
-import com.william.fullbankingapplicationfinal.model.Customer;
+import com.william.fullbankingapplicationfinal.model.*;
 import com.william.fullbankingapplicationfinal.service.AccountService;
+import com.william.fullbankingapplicationfinal.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -104,9 +104,9 @@ public class AccountController {
     }
 
     @GetMapping(value= "/{customerId}/accounts/{accountId}/withdrawls")
-    public Iterable<Withdrawl> getWithdrawlsByAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
+    public Iterable<Withdrawal> getWithdrawlsByAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
         Account account = accountService.getAccountById(account_id).get();
-        ArrayList<Withdrawl> withdrawls =  accountService.getWithdrawlsByAccount(account_id);
+        ArrayList<Withdrawal> withdrawls =  accountService.getWithdrawlsByAccount(account_id);
         if(withdrawls.size() < 1)
             throw new HttpException(HttpStatus.NOT_FOUND, "error fetching withdrawls");
         if(withdrawls.size() > 0)
@@ -118,7 +118,7 @@ public class AccountController {
     public Iterable<Bill> getBillsByAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
         ArrayList<Bill> bills = accountService.getBillsByAccount(account_id);
         if(bills.size() < 1)
-            throw new HttpException(HttpStatus.NOT_FOUND "error fetching bills");
+            throw new HttpException(HttpStatus.NOT_FOUND, "error fetching bills");
         if(bills.size() > 0)
             throw new HttpException(HttpStatus.OK, "success");
 
