@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
+@RequestMapping(value= "/accounts")
 public class AccountController {
 
     @Autowired
@@ -21,7 +22,7 @@ public class AccountController {
     @Autowired
     private CustomerService customerService;
 
-    @GetMapping(value = "/accounts")
+    @GetMapping
     public Iterable<Account> getAllAccounts(){
         ArrayList<Account> accounts = accountService.getAllAccounts();
         if(accounts.size() < 1)
@@ -33,8 +34,8 @@ public class AccountController {
     }
 
 
-    @GetMapping(value = "/{customerId}/accounts/{accountId}/customer")
-    public Customer getAccountOwner(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
+    @GetMapping(value = "/{accountId}/customer")
+    public Customer getAccountOwner(@PathVariable("accountId") Long account_id){
         Optional<Account> account = accountService.getAccountById(account_id);
         Customer customer = accountService.getAccountOwner(account_id);
         if(customer == null)
@@ -46,8 +47,8 @@ public class AccountController {
 
     }
 
-    @PostMapping(value = "/{customerId}/accounts/createAccount")
-    public Optional<Account> createAccount (@PathVariable("customerId") Long customer_id, @RequestBody Account account) {
+    @PostMapping(value = "/createAccount")
+    public Optional<Account> createAccount (Long customer_id, @RequestBody Account account) {
         accountService.createAccount(customer_id, account);
         Optional<Account> target_account = accountService.getAccountById(account.getId());
         if(!target_account.isPresent())
@@ -59,7 +60,7 @@ public class AccountController {
     }
 
 
-    @GetMapping(value = "/accounts/{accountId}")
+    @GetMapping(value = "/{accountId}")
     public Optional<Account> getAccountById(@PathVariable("accountId") Long account_id){
         Optional<Account> account = accountService.getAccountById(account_id);
         if(!account.isPresent())
@@ -70,8 +71,8 @@ public class AccountController {
         return account;
     }
 
-    @PutMapping(value = "/{customerId}/accounts/{accountId}")
-    public Optional<Account> updateAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id, @RequestBody Account account){
+    @PutMapping(value = "/{accountId}")
+    public Optional<Account> updateAccount(@PathVariable("accountId") Long account_id, @RequestBody Account account){
         accountService.updateAccount(account);
         Optional<Account> accountOptional = accountService.getAccountById(account_id);
         if(!accountOptional.isPresent())
@@ -82,8 +83,8 @@ public class AccountController {
         return accountOptional;
     }
 
-    @DeleteMapping(value = "/{customerId}/accounts/{accountId}")
-    public void deleteAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
+    @DeleteMapping(value = "/{accountId}")
+    public void deleteAccount(@PathVariable("accountId") Long account_id){
         accountService.deleteAccount(account_id);
         Optional<Account> accountOptional = accountService.getAccountById(account_id);
         if(!accountOptional.isPresent())
@@ -91,8 +92,8 @@ public class AccountController {
         if(accountOptional.isPresent())
             throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "error deleting account");
     }
-    @GetMapping(value = "/{customerId}/accounts/{accountId}/deposits")
-    public Iterable<Deposit> getDepositsByAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
+    @GetMapping(value = "/{accountId}/deposits")
+    public Iterable<Deposit> getDepositsByAccount(@PathVariable("accountId") Long account_id){
         ArrayList<Deposit> deposits = accountService.getDepositsByAccount(account_id);
         if(deposits.size() < 1)
             throw new HttpException(HttpStatus.NOT_FOUND, "error fetching deposits");
@@ -103,8 +104,8 @@ public class AccountController {
 
     }
 
-    @GetMapping(value= "/{customerId}/accounts/{accountId}/withdrawls")
-    public Iterable<Withdrawal> getWithdrawlsByAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
+    @GetMapping(value= "/{accountId}/withdrawals")
+    public Iterable<Withdrawal> getWithdrawlsByAccount(@PathVariable("accountId") Long account_id){
         Account account = accountService.getAccountById(account_id).get();
         ArrayList<Withdrawal> withdrawls =  accountService.getWithdrawlsByAccount(account_id);
         if(withdrawls.size() < 1)
@@ -114,7 +115,7 @@ public class AccountController {
 
         return withdrawls;
     }
-    @GetMapping(value = "/{customerId}/accounts/{accountId}/bills")
+    @GetMapping(value = "/{accountId}/bills")
     public Iterable<Bill> getBillsByAccount(@PathVariable("customerId") Long customer_id, @PathVariable("accountId") Long account_id){
         ArrayList<Bill> bills = accountService.getBillsByAccount(account_id);
         if(bills.size() < 1)
