@@ -43,9 +43,9 @@ public class DepositController {
 	public ResponseEntity<?> createDeposit(@RequestBody Deposit deposit){
 		Deposit d = depositRepository.save(deposit);
 
-		if (null == d){
+		if (null == d)
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND,"Error creating deposit: Account not found");
-		}
+
 		return new ResponseEntity<>(null, HttpStatus.CREATED);
 	}
 
@@ -53,9 +53,9 @@ public class DepositController {
 	public ResponseEntity<?> updateDeposit(@RequestBody Deposit deposit, @PathVariable Long id){
 		Deposit d = depositRepository.save(deposit);
 
-		if(null == d){
+		if(null == d)
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND,"Deposit ID does not exist");
-		}
+
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
 
