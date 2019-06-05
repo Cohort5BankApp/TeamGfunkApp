@@ -1,7 +1,10 @@
 package com.william.fullbankingapplicationfinal.controller;
 
+import com.william.fullbankingapplicationfinal.error.HttpException;
 import com.william.fullbankingapplicationfinal.model.Bill;
+import com.william.fullbankingapplicationfinal.service.AccountService;
 import com.william.fullbankingapplicationfinal.service.BillService;
+import com.william.fullbankingapplicationfinal.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,44 +35,48 @@ public class BillContoller {
                 .path("/{id}")
                 .buildAndExpand(bill.getBill_id())
                 .toUri();
-
         responseHeaders.setLocation(newPersonUri);
+
+        if (bill == null)
+            throw new HttpException(HttpStatus.NOT_FOUND, "error fetching bill");
+        if(bill != null)
+            throw new HttpException(HttpStatus.OK, "Succsessful");
         return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
     }
 
+        //Get A Bill by ID
+        @RequestMapping(value = "/bills/{bill_id}", method = RequestMethod.GET)
+        public Optional<Bill> getBillRecord(@PathVariable Long id){
+            Optional<Bill> optionalBill = billService.getBillById(id);
+            if(!optionalBill.isPresent())
+                throw new HttpException(HttpStatus.NOT_FOUND, "error fetching bill");
+            if(optionalBill.isPresent())
+                throw new HttpException(HttpStatus.OK, "Sucsessful");
 
-
-    //Get A Bill by ID
-    @RequestMapping(value = "/bills/{bill_id}", method = RequestMethod.GET)
-    public Optional<Bill> getBillRecord(@PathVariable Long id)
-            { return billService.getBillById(id);
-            }
-
-
-        //Get all Bills by specific Account
-        @RequestMapping(value = "accounts/{account_id}/bills", method = RequestMethod.GET)
-        public Iterable<Bill> getBillByAccountIdRecord (@PathVariable Long id)
-            { return billService.getBillByAccountId(id);
-        }
-
-
-        //Get all Customer Bills
-        @RequestMapping(value = "customers/{customers_id}/bills", method = RequestMethod.GET)
-        public Iterable<Bill> getBillByAccountIdRecord (@PathVariable Long id)
-            { return billService.getBillByAccountId(id);
+            return billService.getBillById(id);
         }
 
 
         //Delete Bill
         @RequestMapping(value = "/bills/{bill_id}", method = RequestMethod.DELETE)
-        public void deleteBillRecord (@PathVariable Long id)
-            { billService.deleteBill(id);
+        public void deleteBillRecord (@PathVariable Long id){
+            Optional<Bill> optionalBill = billService.getBillById(id);
+            if(!optionalBill.isPresent())
+                throw new HttpException(HttpStatus.NOT_FOUND, "error deleting bill");
+            if(optionalBill.isPresent())
+                throw new HttpException(HttpStatus.OK, "Succsessful");
+            billService.deleteBill(id);
         }
 
         //Update Bill
         @RequestMapping(value = "/bills/{bill_id}", method = RequestMethod.PUT)
-        public void updateBillRecord (@RequestBody Bill bill, @PathVariable Long id)
-            { billService.updateBill(bill);
+        public void updateBillRecord (@RequestBody Bill bill, @PathVariable Long id){
+        Optional<Bill> optionalBill = billService.getBillById(id);
+            if(!optionalBill.isPresent())
+                throw new HttpException(HttpStatus.NOT_FOUND, "error updating bill");
+            if(!optionalBill.isPresent())
+                throw new HttpException(HttpStatus.OK, "Succsessful");
+            billService.updateBill(bill);
         }
     }
 
