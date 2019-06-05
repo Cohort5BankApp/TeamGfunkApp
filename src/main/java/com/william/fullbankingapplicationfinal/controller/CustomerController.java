@@ -1,5 +1,6 @@
 package com.william.fullbankingapplicationfinal.controller;
 
+import com.william.fullbankingapplicationfinal.error.HttpException;
 import com.william.fullbankingapplicationfinal.model.Account;
 import com.william.fullbankingapplicationfinal.model.Bill;
 import com.william.fullbankingapplicationfinal.model.Customer;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.lang.reflect.Array;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -27,51 +30,72 @@ public class CustomerController {
     AccountRepository accountRepository;
 
     @RequestMapping(value = "/customer", method = RequestMethod.POST)
-    public ResponseEntity<?> createCustomer(@Valid @RequestBody Customer customer) {
+    public Optional<Customer> createCustomer(@Valid @RequestBody Customer customer) {
         customerService.createCustomer(customer);
+        Optional<Customer> new_customer = customerService.getCustomerById(customer.getCustomer_id());
         HttpHeaders responseHeaders = new HttpHeaders();
         URI newCustomerUri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(customer.getId())
+                .buildAndExpand(customer.getCustomer_id())
                 .toUri();
         responseHeaders.setLocation(newCustomerUri);
-        return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
+        if(!new_customer.isPresent())
+            throw new HttpException(HttpStatus.NOT_FOUND, "Error creating customer");
+        if(new_customer.isPresent())
+            throw new HttpException(HttpStatus.CREATED, "Success");
+        return new_customer;
     }
 
     @RequestMapping(value = "/customer/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateCustomer(@RequestBody Customer customer, @PathVariable Long id){
-        if(customerService.existsById(id)) {
-            customerService.updateCustomer(customer);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return createCustomer(customer);
-        }
+    public Optional<Customer> updateCustomer(@RequestBody Customer customer, @PathVariable Long customer_id){
+        customerService.updateCustomer(customer);
+        Optional<Customer> customerUpdate = customerService.getCustomerById(customer_id);
+        if(!customerUpdate.isPresent())
+            throw new HttpException(HttpStatus.NOT_FOUND, "Error updating customer");
+        if(customerUpdate.isPresent())
+            throw new HttpException(HttpStatus.OK, "Customer successfully updated");
+        return customerUpdate;
     }
 
     @RequestMapping(value = "/customer", method = RequestMethod.GET)
-    public ResponseEntity<Iterable<Customer>> showAllCustomers() {
-        Iterable<Customer> allCustomers = customerService.getAllCustomers();
-        return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK);
+    public Iterable<Customer> showAllCustomers() {
+        ArrayList<Customer> allCustomers = customerService.getAllCustomers();
+        if(allCustomers.size() < 1)
+            throw new HttpException(HttpStatus.NOT_FOUND, "Error fetching customers");
+        if(allCustomers.size() > 0)
+            throw new HttpException(HttpStatus.OK, "Success");
+        return allCustomers;
     }
 
     @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> findCustomerById(@PathVariable Long id) {
+    public Optional<Customer> findCustomerById(@PathVariable Long id) {
         Optional<Customer> customer = customerService.getCustomerById(id);
-        return new ResponseEntity<>(customer, HttpStatus.OK);
+        if(!customer.isPresent())
+            throw new HttpException(HttpStatus.NOT_FOUND, "Error fetching customer");
+        if(customer.isPresent())
+            throw new HttpException(HttpStatus.OK, "Success");
+        return customer;
     }
 
     @RequestMapping(value = "/customer/{id}/bills", method = RequestMethod.GET)
-    public ResponseEntity<Iterable<Bill>> getBillsByCustomer(@PathVariable Long id) {
-        Iterable<Bill> allBills = customerService.getBillsByCustomer(id);
-        Iterable<Account>
-        return new ResponseEntity<>(allBills, HttpStatus.OK);
+    public Iterable<Bill> getBillsByCustomer(@PathVariable Long id) {
+        ArrayList<Bill> allBills = customerService.getBillsByCustomer(id);
+        if(allBills.size() < 1)
+            throw new HttpException(HttpStatus.NOT_FOUND, "Error fetching bills");
+        if(allBills.size() > 0)
+            throw new HttpException(HttpStatus.OK, "Success");
+        return allBills;
     }
 
     @RequestMapping(value = "/customer/{id}/accounts", method = RequestMethod.GET)
-    public ResponseEntity<Iterable<Account>> getAccountsByCustomer(@PathVariable Long id) {
-        Iterable<Account> allAccounts = customerService.getAccountsByCustomer(id);
-        return new ResponseEntity<>(allAccounts, HttpStatus.OK);
+    public Iterable<Account> getAccountsByCustomer(@PathVariable Long customer_id) {
+        ArrayList<Account> allAccounts = customerService.getAccountsByCustomer(customer_id);
+        if(allAccounts.size() < 1)
+            throw new HttpException(HttpStatus.NOT_FOUND, "Error fetching accounts");
+        if(allAccounts.size() > 0)
+            throw new HttpException(HttpStatus.OK, "Success");
+        return allAccounts;
     }
 
 }

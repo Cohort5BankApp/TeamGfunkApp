@@ -9,6 +9,7 @@ import com.william.fullbankingapplicationfinal.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -23,12 +24,18 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
-    public Iterable<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    public ArrayList<Customer> getAllCustomers() {
+        Iterable<Customer> customers = customerRepository.findAll();
+        ArrayList<Customer> customer_list = new ArrayList<>();
+        for(Customer customer : customers) {
+            customer_list.add(customer);
+        }
+        return customer_list;
     }
 
-    public Iterable<Customer> getCustomerById(Long customer_id) {
-        return customerRepository.findById(customer_id).get();
+    public Optional<Customer> getCustomerById(Long customer_id) {
+        Optional<Customer> customer = customerRepository.findById(customer_id);
+        return customer;
     }
 
     public void updateCustomer(Customer customer) {
@@ -39,13 +46,28 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
-    public Iterable<Bill> getBillsByCustomer(Long customer_id) {
-        return customerRepository.findAllById(customer_id).get();
+    public ArrayList<Bill> getBillsByCustomer(Long customer_id) {
+        Optional<Customer> customer = getCustomerById(customer_id);
+        Iterable<Bill> bills = billRepository.findAll();
+        ArrayList<Bill> customer_bills = new ArrayList<>();
+        for(Bill bill : bills){
+            if(bill.getAccount_id() == customer_id) {
+                customer_bills.add(bill);
+            }
+        }
+        return customer_bills;
     }
 
-    public Iterable<Account> getAccountsByCustomer(Long customer_id) {
-        Customer customer = getCustomerById(customer_id);
-        return accountRepository.findAll(customer);
+    public ArrayList<Account> getAccountsByCustomer(Long customer_id) {
+        Optional<Customer> customer = getCustomerById(customer_id);
+        Iterable<Account> accounts = accountRepository.findAll();
+        ArrayList<Account> customer_accounts = new ArrayList<>();
+        for(Account account : accounts) {
+            if(account.getId() == customer_id) {
+                customer_accounts.add(account);
+            }
+        }
+        return customer_accounts;
     }
 
     public boolean existsById(Long id) {
