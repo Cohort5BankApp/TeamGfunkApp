@@ -1,15 +1,14 @@
 package com.william.fullbankingapplicationfinal.model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
+@Entity
 public class Withdrawal {
-
-	public Withdrawal(WithdrawalStatus status, WithdrawalMedium medium, WithdrawalType type ){
-		this.status = status;
-		this.medium = medium;
-		this.type = type;
-	}
-
+	@Id
+	@GeneratedValue
 	@Column(name = "Deposit_id")
 	private Long id;
 
@@ -24,6 +23,7 @@ public class Withdrawal {
 
 	@Column(name = "Deposit_Status")
 	private WithdrawalStatus status;
+
 	public enum WithdrawalStatus{
 		PENDING,CANCELLED,COMPLETED;
 	}
@@ -42,6 +42,21 @@ public class Withdrawal {
 
 	@Column(name = "Description")
 	private String description;
+
+	public Withdrawal(){
+
+	}
+
+	public Withdrawal(Long id, WithdrawalType type, String transaction_date, WithdrawalStatus status, Long account_id, WithdrawalMedium medium, Double amount, String description) {
+		this.id = id;
+		this.type = type;
+		this.transaction_date = transaction_date;
+		this.status = status;
+		this.account_id = account_id;
+		this.medium = medium;
+		this.amount = amount;
+		this.description = description;
+	}
 
 	public Long getId() {
 		return id;

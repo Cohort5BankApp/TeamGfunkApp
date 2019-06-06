@@ -16,8 +16,7 @@ public class AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
-
-        @Autowired
+    @Autowired
     private DepositRepository depositRepository;
     @Autowired
     private CustomerRepository customerRepository;
@@ -36,8 +35,8 @@ public class AccountService {
     }
 //
     public Optional<Account> getAccountById(Long id) {
-        Optional<Account> account = accountRepository.findById(id);
-        return account;
+        return accountRepository.findById(id);
+
     }
 
     public void createAccount(Long customer_id, Account account){

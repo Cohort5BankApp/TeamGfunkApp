@@ -15,10 +15,12 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
+@RequestMapping(value = "/withdrawls")
 public class WithdrawalController {
 
 	@Autowired
 	private WithdrawalService withdrawalService;
+	@Autowired
 	private WithdrawlRepository withdrawlRepository;
 
 	@GetMapping(path = "/accounts/{accountId}/withdrawals")

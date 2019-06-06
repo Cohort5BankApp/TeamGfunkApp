@@ -1,6 +1,8 @@
 package com.william.fullbankingapplicationfinal.service;
 
+import com.william.fullbankingapplicationfinal.model.Account;
 import com.william.fullbankingapplicationfinal.model.Bill;
+import com.william.fullbankingapplicationfinal.repository.AccountRepository;
 import com.william.fullbankingapplicationfinal.repository.BillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +13,10 @@ import java.util.Optional;
 public class BillService {
 
     @Autowired
-    BillRepository billRepository;
+    private BillRepository billRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     public Optional<Bill> getBillById(Long id) {
         return billRepository.findById(id);
@@ -21,16 +26,26 @@ public class BillService {
         return billRepository.findAll();
     }
 
-    public void createBill(Bill bill) {
+    public void createBill(Long account_id, Bill bill) {
         billRepository.save(bill);
+        Account account = accountRepository.findById(account_id).get();
+        Double newBalance = account.getBalance() - bill.getPayment_amount();
+        account.setBalance(newBalance);
     }
 
-    public void updateBill(Bill bill) {
+    public void updateBill(Long account_id, Bill bill) {
         billRepository.save(bill);
+        Account account = accountRepository.findById(account_id).get();
+        Double newBalance = account.getBalance() - bill.getPayment_amount();
+        account.setBalance(newBalance);
     }
 
-    public void deleteBill(Long id) {
-        billRepository.deleteById(id);
+    public void deleteBill(Long account_id, Long bill_id) {
+        billRepository.deleteById(bill_id);
+        Bill bill = billRepository.findById(bill_id).get();
+        Account account = accountRepository.findById(account_id).get();
+        Double newBalance = account.getBalance() + bill.getPayment_amount();
+        account.setBalance(newBalance);
     }
 
     public boolean existsById(Long id) {
