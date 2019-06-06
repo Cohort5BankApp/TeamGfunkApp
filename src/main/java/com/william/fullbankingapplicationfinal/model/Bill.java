@@ -1,7 +1,16 @@
 package com.william.fullbankingapplicationfinal.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Bill {
+
+    @Id
+    @GeneratedValue
     private Long bill_id;
+
     private String status;
     private String payee;
     private String nickname;

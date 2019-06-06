@@ -16,9 +16,11 @@ import java.util.Optional;
 public class CustomerService {
 
     @Autowired
-    CustomerRepository customerRepository;
-    BillRepository billRepository;
-    AccountRepository accountRepository;
+    private CustomerRepository customerRepository;
+    @Autowired
+    private BillRepository billRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
     public void createCustomer(Customer customer) {
         customerRepository.save(customer);
@@ -47,7 +49,6 @@ public class CustomerService {
     }
 
     public ArrayList<Bill> getBillsByCustomer(Long customer_id) {
-        Optional<Customer> customer = getCustomerById(customer_id);
         Iterable<Bill> bills = billRepository.findAll();
         ArrayList<Bill> customer_bills = new ArrayList<>();
         for(Bill bill : bills){
@@ -58,12 +59,16 @@ public class CustomerService {
         return customer_bills;
     }
 
+    //customer:1 account:1
+    //customer: 1 account2: 2
+
+
     public ArrayList<Account> getAccountsByCustomer(Long customer_id) {
         Optional<Customer> customer = getCustomerById(customer_id);
         Iterable<Account> accounts = accountRepository.findAll();
         ArrayList<Account> customer_accounts = new ArrayList<>();
         for(Account account : accounts) {
-            if(account.getId() == customer_id) {
+            if(account.getCustomer().getCustomer_id() == customer_id) {
                 customer_accounts.add(account);
             }
         }
