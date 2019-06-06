@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -46,6 +47,15 @@ public class DepositService {
         Deposit deposit = depositRepository.findById(deposit_id).get();
         Double newBalance = account.getBalance() - deposit.getAmount();
         account.setBalance(newBalance);
+    }
+
+    public ArrayList<Deposit> getDeposits() {
+        Iterable<Deposit> deposits = depositRepository.findAll();
+        ArrayList<Deposit> these_deposits = new ArrayList<>();
+        for (Deposit deposit : deposits) {
+            these_deposits.add(deposit);
+        }
+        return these_deposits;
     }
 
 }

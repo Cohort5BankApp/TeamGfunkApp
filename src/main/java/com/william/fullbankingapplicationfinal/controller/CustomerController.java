@@ -22,24 +22,27 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
+@RequestMapping(value = "/customers")
 public class CustomerController {
 
     @Autowired
-    CustomerService customerService;
-    BillService billService;
-    AccountRepository accountRepository;
+    private CustomerService customerService;
+    @Autowired
+    private BillService billService;
+    @Autowired
+    private AccountRepository accountRepository;
 
-    @RequestMapping(value = "/customer", method = RequestMethod.POST)
+    @RequestMapping(value = "/createCustomer", method = RequestMethod.POST)
     public Optional<Customer> createCustomer(@Valid @RequestBody Customer customer) {
         customerService.createCustomer(customer);
         Optional<Customer> new_customer = customerService.getCustomerById(customer.getCustomer_id());
-        HttpHeaders responseHeaders = new HttpHeaders();
-        URI newCustomerUri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(customer.getCustomer_id())
-                .toUri();
-        responseHeaders.setLocation(newCustomerUri);
+//        HttpHeaders responseHeaders = new HttpHeaders();
+//        URI newCustomerUri = ServletUriComponentsBuilder
+//                .fromCurrentRequest()
+//                .path("/{id}")
+//                .buildAndExpand(customer.getCustomer_id())
+//                .toUri();
+//        responseHeaders.setLocation(newCustomerUri);
         if(!new_customer.isPresent())
             throw new HttpException(HttpStatus.NOT_FOUND, "Error creating customer");
         if(new_customer.isPresent())
@@ -47,8 +50,8 @@ public class CustomerController {
         return new_customer;
     }
 
-    @RequestMapping(value = "/customer/{id}", method = RequestMethod.PUT)
-    public Optional<Customer> updateCustomer(@RequestBody Customer customer, @PathVariable Long customer_id){
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public Optional<Customer> updateCustomer(@RequestBody Customer customer, @PathVariable("id") Long customer_id){
         customerService.updateCustomer(customer);
         Optional<Customer> customerUpdate = customerService.getCustomerById(customer_id);
         if(!customerUpdate.isPresent())
@@ -58,7 +61,7 @@ public class CustomerController {
         return customerUpdate;
     }
 
-    @RequestMapping(value = "/customer", method = RequestMethod.GET)
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
     public Iterable<Customer> showAllCustomers() {
         ArrayList<Customer> allCustomers = customerService.getAllCustomers();
         if(allCustomers.size() < 1)
@@ -68,8 +71,8 @@ public class CustomerController {
         return allCustomers;
     }
 
-    @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
-    public Optional<Customer> findCustomerById(@PathVariable Long id) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public Optional<Customer> findCustomerById(@PathVariable("id") Long id) {
         Optional<Customer> customer = customerService.getCustomerById(id);
         if(!customer.isPresent())
             throw new HttpException(HttpStatus.NOT_FOUND, "Error fetching customer");
@@ -88,7 +91,7 @@ public class CustomerController {
         return allBills;
     }
 
-    @RequestMapping(value = "/customer/{id}/accounts", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}/accounts", method = RequestMethod.GET)
     public Iterable<Account> getAccountsByCustomer(@PathVariable Long customer_id) {
         ArrayList<Account> allAccounts = customerService.getAccountsByCustomer(customer_id);
         if(allAccounts.size() < 1)

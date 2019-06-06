@@ -50,10 +50,19 @@ public class CustomerService {
 
     public ArrayList<Bill> getBillsByCustomer(Long customer_id) {
         Iterable<Bill> bills = billRepository.findAll();
+        Iterable<Account> accounts = accountRepository.findAll();
         ArrayList<Bill> customer_bills = new ArrayList<>();
-        for(Bill bill : bills){
-            if(bill.getAccount_id() == customer_id) {
-                customer_bills.add(bill);
+        ArrayList<Account> customer_accounts = new ArrayList<>();
+        for (Account account : accounts) {
+            if (account.getCustomer().getCustomer_id() == customer_id) {
+                customer_accounts.add(account);
+            }
+            for (Bill bill : bills) {
+                for (Account customer_account : customer_accounts) {
+                    if (bill.getAccount_id() == customer_account.getId()) {
+                        customer_bills.add(bill);
+                    }
+                }
             }
         }
         return customer_bills;
