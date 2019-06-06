@@ -42,7 +42,7 @@ public class Withdrawal {
 
 	//@Column(name = "Description")
 	private String description;
-	
+
 
 	public Long getId() {
 		return id;
