@@ -18,7 +18,7 @@ import java.util.Optional;
 
 
 @RestController
-@CrossOrigin (origins = "http://localhost:4200")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/bills")
 public class BillContoller {
     @Autowired

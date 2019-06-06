@@ -19,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value ="/deposits")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class DepositController {
 
 
