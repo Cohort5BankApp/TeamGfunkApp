@@ -8,18 +8,17 @@ public class Customer {
 
     @Id
     @GeneratedValue
-    @Column(name = "CUSTOMER_ID")
     private Long customer_id;
 
-    @Column(name = "CUSTOMER_FIRST_NAME")
+
     private String first_name;
 
-    @Column(name = "CUSTOMER_LAST_NAME")
+
     private String last_name;
 
 
 
-    @JoinColumn(name = "CUSTOMER_ADDRESSES")
+
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Address> address;
 

@@ -2,27 +2,11 @@ package com.william.fullbankingapplicationfinal.model;
 
 import javax.persistence.*;
 
-//@Embeddable
+
 @Entity
 public class Deposit {
 
-//	public Deposit(DepositStatus status, DepositMedium medium, DepositType type ){
-//		this.status = status;
-//		this.medium = medium;
-//		this.type = type;
-//	}
-
-	public Deposit(Long id, DepositType type, String transaction_date, DepositStatus status, Long account_id, DepositMedium medium, Double amount, String description) {
-		this.id = id;
-		this.type = type;
-		this.transaction_date = transaction_date;
-		this.status = status;
-		this.account_id = account_id;
-		this.medium = medium;
-		this.amount = amount;
-		this.description = description;
-	}
-
+	@Column(name = "Deposit_id")
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -57,6 +41,22 @@ public class Deposit {
 
 	//@Column(name = "Description")
 	private String description;
+
+
+	public Deposit(){
+
+	}
+
+	public Deposit(Long id, DepositType type, String transaction_date, DepositStatus status, Long account_id, DepositMedium medium, Double amount, String description) {
+		this.id = id;
+		this.type = type;
+		this.transaction_date = transaction_date;
+		this.status = status;
+		this.account_id = account_id;
+		this.medium = medium;
+		this.amount = amount;
+		this.description = description;
+	}
 
 	public Long getId() {
 		return id;

@@ -17,11 +17,13 @@ import java.nio.charset.Charset;
 import java.util.Optional;
 
 @RestController
+@RequestMapping(value ="/deposits")
 public class DepositController {
 
 
 	@Autowired
 	private DepositService depositService;
+	@Autowired
 	private DepositRepository depositRepository;
 
 	@RequestMapping(path = "/accounts/{accountId}/deposits",method = RequestMethod.GET)
